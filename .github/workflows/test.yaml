@@ -1,0 +1,22 @@
+name: Test
+
+on: push
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - run: npm install
+      - run: git clone https://github.com/grpc/grpc.git
+      - run: cd grpc
+      - run: git submodule update --init
+      - run: mkdir -p cmake/build
+      - run: cd cmake/build
+      - run: cmake -DgRPC_BUILD_TESTS=ON ../..
+      - run: make grpc_cli
+      - run: PATH=$PATH:$(pwd)
+      - run: cd ../../..
+      - run: npm test
